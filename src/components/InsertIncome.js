@@ -7,7 +7,14 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import NumberFormat from 'react-number-format';
 import PropTypes from 'prop-types';
+import Snackbar from '@material-ui/core/Snackbar';
+import Fade from '@material-ui/core/Fade';
+import * as API from '../constants/Api';
 
+var date = new Date();
+    var moment = require('moment');
+    var dateIn = moment(date);
+    var formatedDate=dateIn.format("YYYY-MM-DD");
 //Adding js styles
 const styles = theme => (
     {
@@ -16,7 +23,7 @@ const styles = theme => (
         flexWrap: 'wrap',
     },
     datepickerx:{
-        width: 150,
+        width: 120,
         underline: {
             "&&&:before": {
             color: "white"
@@ -29,7 +36,7 @@ const styles = theme => (
                 borderColor: 'white',
             },
             '& .MuiInput-input':{ color: "white"},
-            paddingLeft: 80,
+            paddingLeft: 140,
             color: "white",
             textEmphasisColor: "white",
             '& .MuiInput-underline:before': {
@@ -49,12 +56,6 @@ const styles = theme => (
             '& label': {
                 color: 'white',
             },
-            '& .MuiInput-underline:after': {
-                borderBottomColor: 'white',
-            },
-            '& .MuiInput-underline:before': {
-                borderBottomColor: 'white',
-            },
             '&:hover fieldset': {
                 borderColor: 'white',
             },
@@ -71,11 +72,12 @@ const styles = theme => (
         border: 0,
         borderRadius: 3,
         color: "white",
-        width:400,
+        width:490,
+        height: 50,
         marginTop: 50,
-        backgroundColor: 'black',
+        textTransform: 'none',
+        backgroundColor: '#37364b',
         borderColor: '#007bff',
-        borderRadius: 10,
         '&:hover': {
         backgroundColor: 'black',
         borderColor: '#0062cc',
@@ -95,7 +97,7 @@ const styles = theme => (
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
-        width: 400,
+        width: 475,
         paddingTop: 10,
         marginTop: 20,
         color: "white",
@@ -167,20 +169,21 @@ const styles = theme => (
     constructor(props){
     super(props);
     this.state = {
-    date:'',
+    date: formatedDate,
     item:'',
     amount:'',
     category:'',
     selex:'',
     selectedOption: '',
     ProductData: [] ,
+    open: false,
   }
 }
 
   //Following function will be called by default on page load
   
    componentDidMount() {  
-    axios.get('http://localhost:8081/tracker/register/liscategoryincome')
+    axios.get(API.CAT_LIST_INCOME)
     .then(response => {  
             console.log("____________",response.data);  
             this.setState({  
@@ -190,6 +193,11 @@ const styles = theme => (
 }     
 
   //functions for various Onchange events
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   handleChange1 = event => {
     this.setState({ date: event.target.value });
     console.log(this.state.date);
@@ -223,23 +231,16 @@ const styles = theme => (
   handleSubmit = event => {
     event.preventDefault();
     console.log("dfdf");
-    axios.post(`http://localhost:8081/tracker/register/addincome?USER_ID=${this.props.message}&ITEM=${this.state.item}&CATEGORY_ID=${this.state.selex.value}&AMOUNT=${this.state.amount}&TRANSACTION_DATE=${this.state.date}`)    .then(res => {
+    axios.post(`http://localhost:8081/tracker/register/addincome?userId=${this.props.message}&item=${this.state.item}&categoryId=${this.state.selex.value}&amount=${this.state.amount}&transactionDate=${this.state.date}`).then(res => {
       console.log("res="+res);
-      alert('Insertion successfull');
-
-      
+      this.setState({ open: true ,amount:'',item:'',selex:'',date:formatedDate});  
     })
-    window.location.reload(false);
   }
 
   render() {
 
+    
 
-    // var date = new Date();
-
-    // var formatedDate = `${date.getMonth()+1}-${date.getDate()}-${date.getFullYear()}`
-        
-    // console.log(formatedDate);
     const { classes } = this.props;
 
     //Mapping result into label and value
@@ -261,19 +262,22 @@ const styles = theme => (
                     onChange={this.handleChange1}
                     name="date" 
                     type="date"
+                    value={this.state.date}
                     className={classes.datepickerx}
                     required                    
                     />
-                    <CalendarTodayIcon style={{ fontSize: 25, paddingLeft:100 }}  />
+                    <CalendarTodayIcon style={{ fontSize: 25, paddingLeft:120 }}  />
             </label>
 
             {/* Item Field */}
 
             <TextField 
-              required 
+              required
+              InputLabelProps={{required: false}}  
               className={classes.textField} 
               label="Item" 
               name="item" 
+              value={this.state.item}
               onChange={this.handleChange2}/>
 
             {/* Amount field */}
@@ -281,7 +285,9 @@ const styles = theme => (
               className={classes.textField}
               label="Amount"
               required
+              InputLabelProps={{required: false}}  
               name="amount"
+              value={this.state.amount}
               onChange={this.handleChange3}
               InputProps={{
                 inputComponent: NumberFormatCustom,
@@ -298,21 +304,30 @@ const styles = theme => (
                 required
                 className={classes.textField}
                 options={options}
-                values=''
-                required
+                value={this.state.selex}
                 getOptionLabel={option => option.label}       
                 onOptionSelected={this.handleOptionSelected}
                 onChange={this.handleOptionSelected}
                 renderInput={(params) => (
-                <TextField {...params} label="Category" margin="normal" />
+                <TextField required InputLabelProps={{required: false}}  {...params} label="Category" margin="normal" />
                 )}
             />        
 
             {/* Submit button */}
 
-            <Button className={classes.Button}  variant="contained" disableElevation type="submit">
-            ADD INCOME
-            </Button>
+            <div> 
+             <Button className={classes.Button}  variant="contained" disableElevation type="submit">
+                  Add Income
+             </Button>
+              <Snackbar
+                  open={this.state.open}
+                  onClose={this.handleClose}
+                  TransitionComponent={Fade}
+                  autoHideDuration={1000}
+                  variant="success"
+                  message={<span  id="message-id">Income Insertion Successfull</span>}
+            /> 
+           </div>
 
           
         </form>

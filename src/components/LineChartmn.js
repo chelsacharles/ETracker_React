@@ -1,7 +1,6 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
 import axios from 'axios';
-
 export default class LineChartmn extends React.Component {
   constructor(props) {
     super(props);
@@ -10,7 +9,7 @@ export default class LineChartmn extends React.Component {
     }
   }
   componentDidMount() {
-    axios.get(`http://localhost:8081/tracker/register/TotalExpenseTotalIncomeLine_month`,{params:{uSER_ID: this.props.message}})
+    axios.get(this.props.api,{params:{userId: this.props.message}})
       .then(res => {
         const response = res.data;
         let day=[];
@@ -69,6 +68,7 @@ export default class LineChartmn extends React.Component {
       <div>
         <Line data={this.state.Data} 
         options={this.state.options}
+        
          />
       </div>
     )

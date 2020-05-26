@@ -51,10 +51,11 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: '#F35B8C',
-    height:75,
+    height:100,
     fontSize:35,
     color: "white",
-    fontFamily:"Source Sans Pro Bold",
+    textTransform: 'none',
+    font: "Bold 35px/37px source sans pro",
 
    
    
@@ -65,9 +66,10 @@ const useStyles = makeStyles((theme) => ({
 const useStyles1 = makeStyles((theme) => ({
     root: {
       backgroundColor: '#69B5FF',
-      fontSize:35,
-    fontFamily:"Source Sans Pro Bold",
-    fontSize:35,
+
+      textTransform: 'none',
+      font: "Bold 35px/37px source sans pro",
+
     
     color: "white",
     '&:hover': {
@@ -134,7 +136,7 @@ export default function FullWidthTabs(props) {
 
           {/* Specifying Tab contents */}
         <TabPanel className="reddiv"  value={value} index={0} dir={theme.direction}>
-        <InsertExpense message={props.message}/>
+        <InsertExpense message={props.message} />
 
         </TabPanel>
         <TabPanel className="bluediv"  value={value} index={1} dir={theme.direction}>

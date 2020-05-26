@@ -9,15 +9,18 @@
 
 
 
-.expense{color: #F35B8C;}
+.expense1{color: #F35B8C;
+ 
+  font-weight: bold;
+  }
 
-.income{color: #69B5FF; }
+.income1{color: #69B5FF;  font-weight: bold;  }
 
 .style{
 
 position: absolute;
-left: 2%;
-right: 51.5%;
+left: 4%;
+right: 53.5%;
 
 
 }
@@ -26,7 +29,7 @@ right: 51.5%;
   display: flex;
   padding: 10px;
   justify-content: space-between;
-  width: 480px;
+  width: 435px;
   }
   .row {
     width: 180%;
@@ -36,6 +39,7 @@ right: 51.5%;
   .block {
     width: 225px;
     display: inline-block
+  
   }
 
   .card_area_style {   
