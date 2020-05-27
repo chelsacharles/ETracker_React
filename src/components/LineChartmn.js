@@ -12,15 +12,15 @@ export default class LineChartmn extends React.Component {
     axios.get(this.props.api,{params:{userId: this.props.message}})
       .then(res => {
         const response = res.data;
-        let day=[];
+        let label=[];
         let amount = [];
         Array.from(response).forEach(element => {
-          day.push(element.Day);
+          label.push(element.label);
           amount.push(element.TotalExpense);
         });
         this.setState({ 
           Data: {
-            labels:day,
+            labels:label,
             datasets:[
                {
           data: amount,
